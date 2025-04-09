@@ -34,17 +34,11 @@ jobs:
         sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io
         sudo systemctl start docker
         sudo usermod -aG docker $USER
-        
-    # Step 4: Build Docker image
-    - name: Azure CLI script
-      uses: azure/cli@v2
-      with:
-        azcliversion: latest
-        inlineScript: |
-          az acr login --name ${{ vars.ACR_NAME }}
 
+    # Step 4: Build Docker image
     - name: Build Docker Image
       run: |
+        az acr login --name ${{ vars.ACR_NAME }}
         docker build -t $ACR_IMAGE .
 
     # Step 5: Push Docker image to Azure Container Registry
