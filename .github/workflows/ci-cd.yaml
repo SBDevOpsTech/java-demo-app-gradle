@@ -5,9 +5,6 @@ on:
     branches:
       - main
 
-env:
-  ACR_IMAGE: ${{ ACR_NAME }}.azurecr.io/java-demoapp:latest
-
 jobs:
   build:
     name: Build and Push Docker Image
@@ -38,12 +35,12 @@ jobs:
     # Step 4: Build Docker image
     - name: Build Docker Image
       run: |
-        docker build -t $ACR_IMAGE .
+        docker build -t ${{ ACR_NAME }}.azurecr.io/java-demoapp:latest .
 
     # Step 5: Push Docker image to Azure Container Registry
     - name: Push Docker Image to ACR
       run: |
-        docker push $ACR_IMAGE
+        docker push ${{ ACR_NAME }}.azurecr.io/java-demoapp:latest
 
   # deploy:
   #   name: Deploy to Dev
