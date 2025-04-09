@@ -24,18 +24,18 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+    # Step 3: Set up Docker
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    # Step 4: Build Docker image
     - name: Azure CLI script
       uses: azure/cli@v2
       with:
         azcliversion: latest
         inlineScript: |
           az acr login --name ${{ vars.ACR_NAME }}
-
-    # Step 3: Set up Docker
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-
-    # Step 4: Build Docker image
+          
     - name: Build Docker Image
       run: |
         docker build -t $ACR_IMAGE .
