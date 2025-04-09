@@ -67,7 +67,7 @@ jobs:
     # Step 2: Get AKS kubeconfig
     - name: Get AKS Kubeconfig
       run: |
-        az aks get-credentials --resource-group ${{ AKS_RESOURCE_GROUP }} --name ${{ AKS_CLUSTER_NAME }} --overwrite-existing
+        az aks get-credentials --resource-group ${{ vars.AKS_RG_NAME }} --name ${{ vars.AKS_NAME }} --overwrite-existing
 
     # Step 3: Deploy to Kubernetes
     - name: Deploy to Kubernetes
