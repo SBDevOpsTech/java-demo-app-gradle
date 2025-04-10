@@ -1,0 +1,58 @@
+name: Deployment Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment to deploy to'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - qa
+          - staging
+          - production
+      docker_image:
+        description: 'Docker image to deploy'
+        required: true
+        default: 'java-demoapp:latest'
+        type: string
+
+env:
+  DEV_ACR_NAME: ${{ vars.ACR_NAME }}
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: ${{ github.event.inputs.environment }}
+    steps:
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - uses: azure/setup-kubectl@v4
+      with:
+        version: 'latest'
+      id: install
+
+    - name: Promote Docker Image
+      run: |
+        az acr login --name $DEV_ACR_NAME
+        docker pull $DEV_ACR_NAME.azurecr.io/${{ github.event.inputs.docker_image }}
+        docker tag $DEV_ACR_NAME.azurecr.io/${{ github.event.inputs.docker_image }} ${{ vars.ACR_NAME }}.azurecr.io/${{ github.event.inputs.docker_image }}
+        docker push ${{ vars.ACR_NAME }}.azurecr.io/${{ github.event.inputs.docker_image }}
+
+    # Step 2: Get AKS kubeconfig
+    - name: Get AKS Kubeconfig
+      run: |
+        az aks get-credentials --resource-group ${{ vars.AKS_RG_NAME }} --name ${{ vars.AKS_NAME }} --overwrite-existing
+
+    # Step 3: Deploy to Kubernetes
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl get pods -A
