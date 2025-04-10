@@ -1,0 +1,12 @@
+# This is a Kubernetes Service manifest file. 
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-app-svc
+spec:
+  selector:
+    app: java-app
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: LoadBalancer

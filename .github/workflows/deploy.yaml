@@ -30,6 +30,9 @@ jobs:
     environment:
       name: ${{ github.event.inputs.environment }}
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
     - name: Log in to Azure
       uses: azure/login@v1
       with:
@@ -55,4 +58,4 @@ jobs:
     # Step 3: Deploy to Kubernetes
     - name: Deploy to Kubernetes
       run: |
-        kubectl get pods -A
+        kubectl apply -f k8s/*.yaml
