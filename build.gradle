@@ -14,11 +14,11 @@ java {
 	}
 }
 
-sonar {
-    properties {
-        property("sonar.projectKey", "java-demo-app-gradle")
-    }
-}
+// sonar {
+//     properties {
+//         property("sonar.projectKey", "java-demo-app-gradle")
+//     }
+// }
 
 repositories {
 	mavenCentral()
